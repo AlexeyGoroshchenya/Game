@@ -1,7 +1,8 @@
 "use strict";
 
-let target;
-let ansver;
+let target = 0;
+let ansver = 0;
+let uncorrectData = false;
 
 let makeTarget = function () {
     return target = (Math.trunc(Math.random() * 100)) + 1;
@@ -11,51 +12,60 @@ const isNumber = function (num) {
     return !isNaN(parseFloat(num)) && isFinite(num);
 }
 
-
 const checkAnswer = function () {
 
     let toMach = target < ansver;
     let toFew = target > ansver;
-    let uncorrectData = !isNumber(ansver) || parseInt(ansver) <= 0 || parseInt(ansver) > 100;
 
-
-    if (toMach) {
-        return 'Загаданное число меньше';
-    } else if (toFew) {
-        return 'Загаданное число больше';
-    } else if (uncorrectData) {
+    if (uncorrectData) {
         return "Введите число!";
+    } else if (toFew) {
+        return 'Загаданное число больше.';
+    } else if (toMach) {
+        return 'Загаданное число меньше.';
     }
 }
 
-const game2 = function (x) {
+const game2 = function (targetValue) {
 
-    let i = 1;
-
-    const b = function (ind) {
-
+    const startGameCycle = function (ind) {
 
         if (ind == 1) {
-            ansver = prompt('Угадайте число от 1 до 100!');
+
+            if (!uncorrectData) {
+                console.log(target);// это тут не нужно. но проверять легче когда оно есть
+                ansver = prompt('Угадайте число от 1 до 100!');
+            } else {
+                ansver = prompt(checkAnswer());
+            }
+
+            uncorrectData = !isNumber(ansver) || parseInt(ansver) <= 0 || parseInt(ansver) > 100;
         } else {
             ansver = prompt(checkAnswer());
+
+            uncorrectData = !isNumber(ansver) || parseInt(ansver) <= 0 || parseInt(ansver) > 100;
         }
-        console.log(ind);
+
 
         if (ansver === null) {
             alert("game over");
             return;
         } else {
-            if (x != ansver) {
-                ind++;
-                b(ind++);
+            if (targetValue != ansver) {
+
+                if (uncorrectData) {
+                    startGameCycle(ind, uncorrectData);
+                } else {
+                    ind++;
+                    startGameCycle(ind++);
+                }
             } else {
                 alert("you win");
             }
         }
 
     }
-    b(i);
+    startGameCycle(1);
 }
 target = makeTarget();
 game2(target);
