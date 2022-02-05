@@ -27,16 +27,17 @@ const checkAnswer = function () {
     }
 }
 
-const game2 = function () {
+const game2 = function (makeTargetFunction) {
 
-    let index = 1;
+    //let index = 1;
 
     const startGameCycle = function (ind) {
 
         if (ind == 1) {
 
             if (!uncorrectData) {
-                makeTarget();
+                makeTargetFunction();
+                console.log(target);// это тут не нужно. но проверять легче когда оно есть
                 ansver = prompt('Угадайте число от 1 до 100!');
             } else {
                 ansver = prompt(checkAnswer() + ` У вас осталось ${11 - ind} попыток`);
@@ -73,15 +74,14 @@ const game2 = function () {
 
     }
 
-    startGameCycle(index);
+    startGameCycle(1);
 
     if (restartQuestion) {
-        makeTarget();
-        startGameCycle(index);
-    } else {
 
+        game2(makeTarget);
+    } else {
         return;
     }
 }
 
-game2();
+game2(makeTarget);
