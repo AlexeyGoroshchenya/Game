@@ -1,9 +1,11 @@
 "use strict";
 
-let target;
-let ansver;
+let target = 0;
+let ansver = 0;
+let restartQuestion = false;
+let uncorrectData = false;
 
-let makeTarget = function () {
+const makeTarget = function () {
     return target = (Math.trunc(Math.random() * 100)) + 1;
 }
 
@@ -11,51 +13,75 @@ const isNumber = function (num) {
     return !isNaN(parseFloat(num)) && isFinite(num);
 }
 
-
 const checkAnswer = function () {
 
-    let toMach = target < ansver;
-    let toFew = target > ansver;
-    let uncorrectData = !isNumber(ansver) || parseInt(ansver) <= 0 || parseInt(ansver) > 100;
+    let toMach = (target < ansver);
+    let toFew = (target > ansver);
 
-
-    if (toMach) {
-        return 'Загаданное число меньше';
-    } else if (toFew) {
-        return 'Загаданное число больше';
-    } else if (uncorrectData) {
+    if (uncorrectData) {
         return "Введите число!";
+    } else if (toFew) {
+        return 'Загаданное число больше.';
+    } else if (toMach) {
+        return 'Загаданное число меньше.';
     }
 }
 
-const game2 = function (x) {
+const game2 = function () {
 
-    let i = 1;
+    let index = 1;
 
-    const b = function (ind) {
-
+    const startGameCycle = function (ind) {
 
         if (ind == 1) {
-            ansver = prompt('Угадайте число от 1 до 100!');
+
+            if (!uncorrectData) {
+                makeTarget();
+                ansver = prompt('Угадайте число от 1 до 100!');
+            } else {
+                ansver = prompt(checkAnswer() + ` У вас осталось ${11 - ind} попыток`);
+            }
+
+            uncorrectData = !isNumber(ansver) || parseInt(ansver) <= 0 || parseInt(ansver) > 100;
+
+        } else if (ind == 11) {
+            restartQuestion = confirm('Попытки закончились, хотите сыграть еще?');
+
+            return restartQuestion;
         } else {
-            ansver = prompt(checkAnswer());
+            ansver = prompt(checkAnswer() + ` У вас осталось ${11 - ind} попыток`);
+            uncorrectData = !isNumber(ansver) || parseInt(ansver) <= 0 || parseInt(ansver) > 100;
         }
-        console.log(ind);
 
         if (ansver === null) {
             alert("game over");
             return;
         } else {
-            if (x != ansver) {
-                ind++;
-                b(ind++);
+            if (target != ansver) {
+                if (uncorrectData) {
+                    startGameCycle(ind, uncorrectData);
+                } else {
+                    ind++;
+                    startGameCycle(ind++);
+                }
+
             } else {
-                alert("you win");
+                restartQuestion = confirm('Вы выиграли. Хотите еще раз сыграть?');
+                return restartQuestion;
             }
         }
 
     }
-    b(i);
+
+    startGameCycle(index);
+
+    if (restartQuestion) {
+        makeTarget();
+        startGameCycle(index);
+    } else {
+
+        return;
+    }
 }
-target = makeTarget();
-game2(target);
+
+game2();
