@@ -1,42 +1,42 @@
 "use strict";
 
-let target = 0;
-let ansver = 0;
-let restartQuestion = false;
-let uncorrectData = false;
 
 const makeTarget = function () {
-    return target = (Math.trunc(Math.random() * 100)) + 1;
+    let target = (Math.trunc(Math.random() * 100)) + 1;
+    return target;
 }
 
-const isNumber = function (num) {
-    return !isNaN(parseFloat(num)) && isFinite(num);
-}
 
-const checkAnswer = function () {
+const game2 = function (target, ind) {
 
-    let toMach = (target < ansver);
-    let toFew = (target > ansver);
+    let ansver = 0;
+    let restartQuestion = false;
+    let uncorrectData = false;
 
-    if (uncorrectData) {
-        return "Введите число!";
-    } else if (toFew) {
-        return 'Загаданное число больше.';
-    } else if (toMach) {
-        return 'Загаданное число меньше.';
+    const checkAnswer = function () {
+
+        let toMach = (target < ansver);
+        let toFew = (target > ansver);
+
+        if (uncorrectData) {
+            return "Введите число!";
+        } else if (toFew) {
+            return 'Загаданное число больше.';
+        } else if (toMach) {
+            return 'Загаданное число меньше.';
+        }
     }
-}
 
-const game2 = function (makeTargetFunction) {
+    const isNumber = function (num) {
+        return !isNaN(parseFloat(num)) && isFinite(num);
+    }
 
-    //let index = 1;
-
-    const startGameCycle = function (ind) {
+    const startGameCycle = function () {
 
         if (ind == 1) {
 
             if (!uncorrectData) {
-                makeTargetFunction();
+
                 console.log(target);// это тут не нужно. но проверять легче когда оно есть
                 ansver = prompt('Угадайте число от 1 до 100!');
             } else {
@@ -63,7 +63,7 @@ const game2 = function (makeTargetFunction) {
                     startGameCycle(ind, uncorrectData);
                 } else {
                     ind++;
-                    startGameCycle(ind++);
+                    startGameCycle(ind);
                 }
 
             } else {
@@ -75,13 +75,19 @@ const game2 = function (makeTargetFunction) {
     }
 
     startGameCycle(1);
+    console.dir(startGameCycle)
 
     if (restartQuestion) {
 
-        game2(makeTarget);
+        game2(makeTarget(), 1);
     } else {
         return;
     }
+
 }
 
-game2(makeTarget);
+game2(makeTarget(), 1);
+
+
+
+
